@@ -11,6 +11,27 @@ export class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    if (localStorage.getItem('contacts')) {
+      try {
+        this.setState(() => ({
+          contacts: JSON.parse(localStorage.getItem('contacts')),
+        }));
+      } catch (e) {
+        console.log(e);
+      }
+      console.log(JSON.parse(localStorage.getItem('contacts')));
+    } else {
+      localStorage.setItem('contacts', []);
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   onAddContact = (name, phone) => e => {
     const id = nanoid();
     const newContact = {
@@ -46,6 +67,7 @@ export class App extends Component {
 
   onFilteredArray = () => {
     let filteredArray = [];
+    console.log(this.state.contacts);
     if (this.state.filter === '') {
       filteredArray = [...this.state.contacts];
       console.log(filteredArray);
